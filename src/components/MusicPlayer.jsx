@@ -117,8 +117,7 @@ const MusicPlayer = ({ selectedTrack, songs, playing, setPlaying, listIsFetching
     document.body.appendChild(link);
     link.click();
     link.parentNode.removeChild(link);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [audioFile, selectedTrack, songs]);
   if (isFetching) {
     return <ShimmerUI type="Player" />;
   }
