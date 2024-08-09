@@ -1,6 +1,5 @@
 import { Stack, Tooltip } from '@mui/material';
-import SpotifyLogo from '../assets/images/spotify.svg';
-import ProfileLogo from '../assets/images/profileImage.svg';
+import { SpotifyLogo, ProfileLogo } from '../assets/images';
 
 const Profile = () => {
   return (

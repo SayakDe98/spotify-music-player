@@ -1,6 +1,7 @@
-import { Grid, LinearProgress, Skeleton } from '@mui/material';
+import { Grid } from '@mui/material';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import secondsToMinutesAndSeconds from './utils/convertSecondsToMinutes';
+import ShimmerUI from './utils/ShimmerUI';
 const MusicList = lazy(() => import('./components/MusicList'));
 const MusicPlayer = lazy(() => import('./components/MusicPlayer'));
 const Profile = lazy(() => import('./components/Profile'));
@@ -15,6 +16,7 @@ function App() {
   const [selectedTrack, setSelectedTrack] = useState(0);
   const [error, setError] = useState();
   const [playing, setPlaying] = useState(false);
+  const [background, setBackground] = useState({ previous: '#FFF', current: '#FFF' });
 
   useEffect(() => {
     const getSongs = async () => {
@@ -48,13 +50,13 @@ function App() {
     };
     getSongs();
   }, []);
-  if (isFetching) {
-    return (
-      <LinearProgress>
-        <Skeleton variant="rectangular" width={110} height={210} />
-      </LinearProgress>
-    );
-  }
+  useEffect(() => {
+    if (selectedTrack !== undefined) {
+      setBackground({ previous: background.current, current: songs[selectedTrack]?.accent || '#1ED760' });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTrack, songs]);
+
   return (
     <Grid
       container
@@ -72,16 +74,17 @@ function App() {
           md: 'flex-start'
         },
         justifyContent: { xs: 'flex-start', md: 'space-evenly' },
-        background: selectedTrack !== undefined ? songs[selectedTrack]?.accent : 'black'
+        background: background.current,
+        transition: 'background 1s ease'
       }}
     >
       <Grid item xs={12} md={2} sx={{ height: { xs: 'auto', md: '100vh' }, width: { xs: '100vw', md: 'auto' } }}>
-        <Suspense>
+        <Suspense fallback={<ShimmerUI type="Profile" />}>
           <Profile />
         </Suspense>
       </Grid>
       <Grid item xs={12} md={4}>
-        <Suspense>
+        <Suspense fallback={<ShimmerUI type="List" />}>
           <MusicList
             selectedTrack={selectedTrack}
             setSelectedTrack={setSelectedTrack}
@@ -96,7 +99,7 @@ function App() {
         </Suspense>
       </Grid>
       <Grid item xs={12} md={5}>
-        <Suspense>
+        <Suspense fallback={<ShimmerUI type="Player" />}>
           <MusicPlayer
             selectedTrack={selectedTrack}
             setSelectedTrack={setSelectedTrack}

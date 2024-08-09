@@ -1,8 +1,8 @@
-import { Avatar, LinearProgress, List, ListItem, Skeleton, Stack, TextField, Typography } from '@mui/material';
-import { useCallback, useMemo, useState } from 'react';
-import SearchIcon from '../assets/images/search.svg';
+import { Avatar, List, ListItem, Stack, TextField, Typography } from '@mui/material';
+import { useCallback, useMemo, useState, memo } from 'react';
+import { SearchIcon } from '../assets/images';
 
-const MusicList = ({ selectedTrack, searchTerm, setSearchTerm, isFetching, songs, error, topTracks, setSelectedTrack, setPlaying }) => {
+const MusicList = ({ selectedTrack, searchTerm, setSearchTerm, songs, error, topTracks, setSelectedTrack, setPlaying }) => {
   const [topTracksOnly, setTopTracksOnly] = useState(false);
 
   const filteredSongs = useMemo(() => {
@@ -40,12 +40,8 @@ const MusicList = ({ selectedTrack, searchTerm, setSearchTerm, isFetching, songs
     setTopTracksOnly(value);
   }, []);
 
-  if (isFetching) {
-    return <LinearProgress><Skeleton variant="rectangular" width={110} height={210} /></LinearProgress>;
-  }
-
   if (error) {
-    return <h1 style={{ color: 'white' }}>An Error Occured. Please refresh to try again.</h1>;
+    return <Typography sx={{ color: 'white' }} variant="h1">An Error Occured. Please refresh to try again.</Typography>;
   }
 
   return (
@@ -122,4 +118,4 @@ const MusicList = ({ selectedTrack, searchTerm, setSearchTerm, isFetching, songs
   );
 };
 
-export default MusicList;
+export default memo(MusicList);

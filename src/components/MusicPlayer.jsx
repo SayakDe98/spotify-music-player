@@ -1,19 +1,11 @@
-import { Avatar, Box, Button, LinearProgress, Menu, MenuItem, Skeleton, Stack, Typography } from '@mui/material';
-import Options from '../assets/images/options.svg';
-import Previous from '../assets/images/previous.svg';
-import Play from '../assets/images/play.svg';
-import Pause from '../assets/images/pause.svg';
-import Next from '../assets/images/next.svg';
-import Speaker from '../assets/images/speaker.svg';
-import DownloadIcon from '../assets/images/download.png';
-import BackArrow from '../assets/images/backArrow.png';
-import PlaybackIcon from '../assets/images/playback.png';
-import Mute from '../assets/images/mute.svg';
-import { useEffect, useRef, useState } from 'react';
+import { Avatar, Box, Button, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { Options, Pause, Play, Next, Speaker, DownloadIcon, BackArrow, PlaybackIcon, Mute, Previous } from '../assets/images';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
+import ShimmerUI from '../utils/ShimmerUI';
 
 const playbackSpeeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-const MusicPlayer = ({ selectedTrack, songs, playing, setPlaying }) => {
+const MusicPlayer = ({ selectedTrack, songs, playing, setPlaying, listIsFetching }) => {
   const audioRef = useRef(null);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -79,55 +71,56 @@ const MusicPlayer = ({ selectedTrack, songs, playing, setPlaying }) => {
     setProgress(0);
   }, [selectedTrack]);
 
-  const handleSeekOrUnSeek = (seek) => {
-    const newTime = Math.min(seek ? progress + 10 : progress - 10, duration);
-    audioRef.current.currentTime = newTime;
-    setProgress(newTime);
-  };
+  const handleSeekOrUnSeek = useCallback(
+    (seek) => {
+      const newTime = Math.min(seek ? progress + 10 : progress - 10, duration);
+      audioRef.current.currentTime = newTime;
+      setProgress(newTime);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [progress]
+  );
 
-  const handleProgressChange = (event) => {
+  const handleProgressChange = useCallback((event) => {
     const newTime = event.target.value;
     audioRef.current.currentTime = newTime;
     setProgress(newTime);
-  };
+  }, []);
 
   const generalOptionsOpen = Boolean(generalOptionsAnchorEl);
 
-  const handleClick = (event) => {
+  const handleClick = useCallback((event) => {
     event.stopPropagation();
     setGeneralOptionsAnchorEl(event.currentTarget);
-  };
+  }, []);
 
-  const handleGeneralOptionsClose = () => {
+  const handleGeneralOptionsClose = useCallback(() => {
     setGeneralOptionsAnchorEl(null);
-  };
+  }, []);
 
   const optionsOpen = Boolean(optionsAnchorEl);
-  const handleOptionsClick = (event) => {
+  const handleOptionsClick = useCallback((event) => {
     event.stopPropagation();
     setOptionsAnchorEl(event.currentTarget);
-  };
-  const handleOptionsClose = () => {
+  }, []);
+  const handleOptionsClose = useCallback(() => {
     setOptionsAnchorEl(null);
-  };
-  const handleSpeedChange = (e) => {
+  }, []);
+  const handleSpeedChange = useCallback((e) => {
     setPlaybackSpeed(e?.target.id);
-  };
+  }, []);
 
-  const handleDownload = () => {
+  const handleDownload = useCallback(() => {
     const link = document.createElement('a');
     link.href = audioFile;
     songs?.length > selectedTrack && songs[selectedTrack] && link.setAttribute('download', `${songs[selectedTrack]?.url?.split('/')[3]}`);
     document.body.appendChild(link);
     link.click();
     link.parentNode.removeChild(link);
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   if (isFetching) {
-    return (
-      <LinearProgress>
-        <Skeleton variant="rectangular" width={110} height={210} />
-      </LinearProgress>
-    );
+    return <ShimmerUI type="Player" />;
   }
   return (
     <Stack p={2} sx={{ px: { md: '4.3vw', lg: '8vw' } }}>
@@ -265,4 +258,4 @@ const MusicPlayer = ({ selectedTrack, songs, playing, setPlaying }) => {
   );
 };
 
-export default MusicPlayer;
+export default memo(MusicPlayer);
