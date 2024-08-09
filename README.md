@@ -1,6 +1,9 @@
 # Getting Started with Spotify Music Player
 
-Spotify Music Player is a React App(https://github.com/facebook/create-react-app) which makes use of the audio element in HTML5 which allows browsers to play your favourite songs. You can   
+Spotify Music Player is a React App(https://github.com/facebook/create-react-app) which makes use of the audio element in HTML5 which allows browsers to play your favourite songs. You can select various songs and play or pause them. You can
+also click on seek or unseek buttons to seek or unseek the current song. A progress bar will show how long the current
+song is played. You can also toggle between For You and Top Tracks. Select For You for all the songs recommended to you.
+Select Top Tracks if you want to listen to the current top tracks. Have fun!
 
 ## Available Scripts
 
